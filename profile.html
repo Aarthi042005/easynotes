@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Profile – Student Notes</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --maroon:  #6B1D1D;
+      --maroon2: #8B2E2E;
+      --cream:   #F5F0E8;
+      --cream2:  #EDE5D8;
+      --text:    #2C1A1A;
+      --muted:   #7A6060;
+      --white:   #FFFFFF;
+      --shadow:  0 4px 20px rgba(107,29,29,0.10);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── NAV ── */
+    nav {
+      background: var(--maroon);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      height: 60px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-brand {
+      font-family: 'Playfair Display', serif;
+      color: var(--white);
+      font-size: 1rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .nav-links { display: flex; gap: 8px; }
+    .nav-links a {
+      color: var(--cream);
+      text-decoration: none;
+      font-size: 0.85rem;
+      padding: 6px 14px;
+      border-radius: 4px;
+      border: 1px solid transparent;
+      transition: all 0.2s;
+    }
+    .nav-links a:hover { border-color: var(--cream2); }
+    .nav-links a.active {
+      background: var(--white);
+      color: var(--maroon);
+      font-weight: 600;
+    }
+
+    /* ── MAIN LAYOUT ── */
+    .page { max-width: 900px; margin: 0 auto; padding: 40px 20px 60px; }
+
+    /* ── PROFILE CARD ── */
+    .profile-card {
+      background: var(--white);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      margin-bottom: 28px;
+    }
+
+    .card-header {
+      background: linear-gradient(135deg, var(--maroon) 0%, var(--maroon2) 100%);
+      height: 110px;
+      position: relative;
+    }
+
+    .avatar-wrap {
+      position: absolute;
+      bottom: -48px;
+      left: 36px;
+    }
+    .avatar {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      border: 4px solid var(--white);
+      object-fit: cover;
+      background: var(--cream2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      cursor: pointer;
+      position: relative;
+    }
+    .avatar svg { width: 52px; height: 52px; color: var(--muted); }
+    .avatar-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(107,29,29,0.55);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .avatar:hover .avatar-overlay { opacity: 1; }
+    .avatar-overlay span { color: white; font-size: 0.65rem; font-weight: 600; text-align: center; line-height: 1.3; }
+    #photoInput { display: none; }
+
+    .card-body {
+      padding: 60px 36px 28px;
+    }
+
+    .name-row {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+    .student-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.7rem;
+      color: var(--maroon);
+    }
+    .edit-btn {
+      background: var(--maroon);
+      color: var(--white);
+      border: none;
+      border-radius: 6px;
+      padding: 8px 18px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+    .edit-btn:hover { background: var(--maroon2); }
+    .save-btn {
+      background: #2e6b2e;
+      color: var(--white);
+      border: none;
+      border-radius: 6px;
+      padding: 8px 18px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+    .save-btn:hover { background: #255825; }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+    .info-item label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      display: block;
+      margin-bottom: 4px;
+    }
+    .info-item .val {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--text);
+      padding: 6px 0;
+      border-bottom: 1px solid var(--cream2);
+    }
+    .info-item input {
+      width: 100%;
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--text);
+      border: none;
+      border-bottom: 2px solid var(--maroon);
+      background: transparent;
+      padding: 6px 0;
+      outline: none;
+      font-family: 'Inter', sans-serif;
+      display: none;
+    }
+
+    /* ── STATS BAR ── */
+    .stats-bar {
+      display: flex;
+      gap: 0;
+      border-top: 1px solid var(--cream2);
+      margin-top: 24px;
+    }
+    .stat {
+      flex: 1;
+      text-align: center;
+      padding: 16px 0;
+      border-right: 1px solid var(--cream2);
+    }
+    .stat:last-child { border-right: none; }
+    .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      color: var(--maroon);
+    }
+    .stat-label {
+      font-size: 0.72rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-top: 2px;
+    }
+
+    /* ── SECTION HEADER ── */
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.15rem;
+      color: var(--maroon);
+    }
+    .badge {
+      background: var(--maroon);
+      color: var(--white);
+      border-radius: 20px;
+      padding: 2px 10px;
+      font-size: 0.72rem;
+      font-weight: 600;
+    }
+
+    /* ── NOTES LIST ── */
+    .notes-card {
+      background: var(--white);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      padding: 24px 28px;
+    }
+
+    .note-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--cream2);
+      transition: background 0.15s;
+      border-radius: 8px;
+    }
+    .note-item:last-child { border-bottom: none; }
+
+    .note-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: var(--cream2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .note-icon svg { width: 20px; height: 20px; color: var(--maroon); }
+
+    .note-info { flex: 1; }
+    .note-name {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .note-meta {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .note-dl {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--maroon);
+      text-decoration: none;
+      border: 1px solid var(--maroon);
+      border-radius: 5px;
+      padding: 4px 10px;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .note-dl:hover {
+      background: var(--maroon);
+      color: var(--white);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 0;
+      color: var(--muted);
+    }
+    .empty-state svg { width: 48px; height: 48px; margin-bottom: 10px; opacity: 0.4; }
+    .empty-state p { font-size: 0.9rem; }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      background: #2e6b2e;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transform: translateY(80px);
+      opacity: 0;
+      transition: all 0.3s;
+      z-index: 999;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    @media (max-width: 600px) {
+      nav { padding: 0 16px; }
+      .card-body { padding: 56px 18px 20px; }
+      .notes-card { padding: 18px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">Learn Smart Build Your Future</div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="subjects.html">Subjects</a>
+    <a href="upload.html">Upload</a>
+    <a href="profile.html" class="active">Profile</a>
+    <a href="sign.html">Sign In</a>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="page">
+
+  <!-- PROFILE CARD -->
+  <div class="profile-card">
+    <div class="card-header">
+      <div class="avatar-wrap">
+        <div class="avatar" onclick="document.getElementById('photoInput').click()">
+          <svg id="avatarIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+          <img id="avatarImg" src="" alt="Profile Photo" style="display:none; width:100%; height:100%; object-fit:cover; border-radius:50%;"/>
+          <div class="avatar-overlay"><span>Change<br/>Photo</span></div>
+        </div>
+        <input type="file" id="photoInput" accept="image/*" onchange="changePhoto(event)"/>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <div class="name-row">
+        <div class="student-name" id="displayName">Aarthi S</div>
+        <div style="display:flex; gap:8px;">
+          <button class="edit-btn" id="editBtn" onclick="startEdit()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Edit Profile
+          </button>
+          <button class="save-btn" id="saveBtn" onclick="saveEdit()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Save
+          </button>
+        </div>
+      </div>
+
+      <div class="info-grid">
+        <div class="info-item">
+          <label>Full Name</label>
+          <div class="val" id="valName">Aarthi S</div>
+          <input type="text" id="inpName" value="Aarthi S"/>
+        </div>
+        <div class="info-item">
+          <label>Roll Number</label>
+          <div class="val" id="valRoll">21CS001</div>
+          <input type="text" id="inpRoll" value="21CS001"/>
+        </div>
+        <div class="info-item">
+          <label>Department</label>
+          <div class="val" id="valDept">Computer Science & Engineering</div>
+          <input type="text" id="inpDept" value="Computer Science & Engineering"/>
+        </div>
+        <div class="info-item">
+          <label>Year & Section</label>
+          <div class="val" id="valYear">3rd Year – Section A</div>
+          <input type="text" id="inpYear" value="3rd Year – Section A"/>
+        </div>
+        <div class="info-item">
+          <label>Email</label>
+          <div class="val" id="valEmail">aarthi@student.edu</div>
+          <input type="email" id="inpEmail" value="aarthi@student.edu"/>
+        </div>
+        <div class="info-item">
+          <label>College</label>
+          <div class="val" id="valCollege">Anna University</div>
+          <input type="text" id="inpCollege" value="Anna University"/>
+        </div>
+      </div>
+
+      <!-- STATS -->
+      <div class="stats-bar">
+        <div class="stat">
+          <div class="stat-num">12</div>
+          <div class="stat-label">Notes Saved</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">5</div>
+          <div class="stat-label">Subjects</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">3</div>
+          <div class="stat-label">Uploads</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">2</div>
+          <div class="stat-label">Semesters</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DOWNLOADED NOTES -->
+  <div class="notes-card">
+    <div class="section-head">
+      <div class="section-title">My Downloaded Notes</div>
+      <span class="badge">4 Files</span>
+    </div>
+
+    <div class="note-item">
+      <div class="note-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+        </svg>
+      </div>
+      <div class="note-info">
+        <div class="note-name">Data Structures & Algorithms – Unit 1</div>
+        <div class="note-meta">CSE · Downloaded 20 Jun 2026 · PDF · 2.4 MB</div>
+      </div>
+      <a href="#" class="note-dl">↓ Open</a>
+    </div>
+
+    <div class="note-item">
+      <div class="note-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+        </svg>
+      </div>
+      <div class="note-info">
+        <div class="note-name">Operating Systems – Process Scheduling</div>
+        <div class="note-meta">CSE · Downloaded 18 Jun 2026 · PDF · 1.8 MB</div>
+      </div>
+      <a href="#" class="note-dl">↓ Open</a>
+    </div>
+
+    <div class="note-item">
+      <div class="note-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+        </svg>
+      </div>
+      <div class="note-info">
+        <div class="note-name">Database Management Systems – ER Model</div>
+        <div class="note-meta">CSE · Downloaded 15 Jun 2026 · PDF · 3.1 MB</div>
+      </div>
+      <a href="#" class="note-dl">↓ Open</a>
+    </div>
+
+    <div class="note-item">
+      <div class="note-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+        </svg>
+      </div>
+      <div class="note-info">
+        <div class="note-name">Computer Networks – OSI Model Notes</div>
+        <div class="note-meta">CSE · Downloaded 10 Jun 2026 · PDF · 2.0 MB</div>
+      </div>
+      <a href="#" class="note-dl">↓ Open</a>
+    </div>
+
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">✓ Profile saved successfully!</div>
+
+<script>
+  // ── Edit / Save toggle ──
+  const fields = [
+    ['valName','inpName'], ['valRoll','inpRoll'],
+    ['valDept','inpDept'], ['valYear','inpYear'],
+    ['valEmail','inpEmail'], ['valCollege','inpCollege']
+  ];
+
+  function startEdit() {
+    fields.forEach(([v,i]) => {
+      document.getElementById(v).style.display = 'none';
+      const inp = document.getElementById(i);
+      inp.style.display = 'block';
+      inp.focus();
+    });
+    document.getElementById('editBtn').style.display = 'none';
+    document.getElementById('saveBtn').style.display = 'flex';
+  }
+
+  function saveEdit() {
+    fields.forEach(([v,i]) => {
+      const val = document.getElementById(i).value.trim() || document.getElementById(v).textContent;
+      document.getElementById(v).textContent = val;
+      document.getElementById(v).style.display = 'block';
+      document.getElementById(i).style.display = 'none';
+    });
+    // Update name display
+    document.getElementById('displayName').textContent = document.getElementById('inpName').value.trim() || document.getElementById('valName').textContent;
+    document.getElementById('editBtn').style.display = 'flex';
+    document.getElementById('saveBtn').style.display = 'none';
+    showToast();
+  }
+
+  // ── Profile photo ──
+  function changePhoto(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+      document.getElementById('avatarImg').src = ev.target.result;
+      document.getElementById('avatarImg').style.display = 'block';
+      document.getElementById('avatarIcon').style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // ── Toast ──
+  function showToast() {
+    const t = document.getElementById('toast');
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+  }
+</script>
+</body>
+</html>

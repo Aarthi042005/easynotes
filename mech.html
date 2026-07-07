@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>MECH — Student Notes</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Inter',sans-serif;background:#f5ede8;min-height:100vh;}
+  header{background:#6B0F1A;padding:16px 24px;display:flex;align-items:center;gap:14px;}
+  .back-btn{background:rgba(255,255,255,0.15);border:none;color:#fff;font-size:13px;padding:6px 14px;border-radius:20px;cursor:pointer;font-family:'Inter',sans-serif;text-decoration:none;}
+  .back-btn:hover{background:rgba(255,255,255,0.28);}
+  header h1{color:#fff;font-size:17px;font-weight:500;}
+  .hero{background:#6B0F1A;padding:28px 24px 22px;}
+  .hero h2{color:#fff;font-family:'Playfair Display',serif;font-size:26px;}
+  .hero p{color:rgba(255,255,255,0.72);font-size:13px;margin-top:6px;line-height:1.6;}
+  .badge{display:inline-block;background:rgba(255,255,255,0.15);color:#fff;font-size:11px;padding:3px 12px;border-radius:20px;margin-top:10px;}
+  .units-wrap{padding:22px 24px;}
+  .section-label{font-size:11px;text-transform:uppercase;letter-spacing:1.2px;color:#8B1A2A;font-weight:600;margin-bottom:16px;}
+  .unit-card{background:#fff;border:1px solid #e8d5d5;border-radius:14px;margin-bottom:14px;overflow:hidden;box-shadow:0 1px 4px rgba(107,15,26,0.06);}
+  .unit-header{padding:15px 18px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:background 0.15s;}
+  .unit-header:hover{background:#fdf5f5;}
+  .unit-num{background:#6B0F1A;color:#fff;font-size:11px;font-weight:600;padding:3px 12px;border-radius:20px;white-space:nowrap;}
+  .unit-name{font-size:14px;font-weight:600;color:#3a0a10;flex:1;}
+  .arrow{font-size:20px;color:#6B0F1A;font-weight:700;transition:transform 0.22s;line-height:1;}
+  .arrow.open{transform:rotate(90deg);}
+  .unit-body{display:none;border-top:1px solid #f0dede;background:#fdf8f8;}
+  .unit-body.open{display:block;}
+  .unit-intro{font-size:12.5px;color:#8B5A5A;margin:10px 18px 8px;line-height:1.6;font-style:italic;}
+  .topic-list{list-style:none;margin:6px 18px 0;}
+  .topic-list li{font-size:13px;color:#5a2a2a;padding:6px 0;display:flex;align-items:flex-start;gap:10px;line-height:1.55;border-bottom:1px solid #f5e8e8;}
+  .topic-list li:last-child{border-bottom:none;}
+  .topic-list li::before{content:"›";color:#6B0F1A;font-weight:700;flex-shrink:0;margin-top:1px;font-size:16px;}
+  .pdf-section{margin:16px 18px 18px;}
+  .pdf-section-label{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#8B1A2A;font-weight:600;margin-bottom:10px;}
+  .pdf-toolbar{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+  .pdf-download-btn{background:#6B0F1A;color:#fff;border:none;font-size:12px;font-family:'Inter',sans-serif;font-weight:500;padding:7px 16px;border-radius:20px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:background 0.15s;text-decoration:none;}
+  .pdf-download-btn:hover{background:#8B1A2A;}
+  .pdf-viewer-wrap{border-radius:12px;overflow:hidden;border:1px solid #e8d5d5;background:#fff;}
+  .pdf-viewer-wrap iframe{width:100%;height:520px;border:none;display:block;}
+  footer{text-align:center;padding:22px;color:#a07070;font-size:12px;}
+</style>
+</head>
+<body>
+<header>
+  <a class="back-btn" href="subjects.html">← Back</a>
+  <h1>MECH — Mechanical Engineering</h1>
+</header>
+<div class="hero">
+  <h2>Mechanical Engineering</h2>
+  <p>Engineering Mechanics, Thermodynamics, Fluid Mechanics, Machine Design and Manufacturing Technology.</p>
+  <span class="badge">5 Units · 38 Topics</span>
+</div>
+<div class="units-wrap">
+  <div class="section-label">Units &amp; Topics</div>
+  <div id="units-container"></div>
+</div>
+<footer>Student Notes · MECH Department</footer>
+<script>
+const units = [
+  {"num":"Unit I","title":"Engineering Mechanics","intro":"Statics and dynamics of rigid bodies, forces, moments and equilibrium.","pdf":"unitespdf/mech1.pdf","topics":["Statics — Forces, Resultants, Equilibrium of Particles","Moments, Couples & Equivalent Force Systems","Free Body Diagrams & Analysis of Structures","Friction — Laws, Coefficient, Inclined Planes, Wedges","Kinematics — Rectilinear & Curvilinear Motion","Kinetics — Newton's Laws, Work-Energy, Impulse-Momentum","Simple Harmonic Motion & Vibrations Intro"]},
+  {"num":"Unit II","title":"Thermodynamics","intro":"Laws of thermodynamics, thermodynamic cycles and heat transfer.","pdf":"unitespdf/mech2.pdf","topics":["Zeroth & First Law of Thermodynamics","Second Law — Entropy, Carnot Cycle","Properties of Steam — Rankine Cycle","Gas Power Cycles — Otto, Diesel, Dual, Brayton","Refrigeration — Vapour Compression, COP","Air Conditioning — Psychrometry, Comfort Conditions","Heat Transfer — Conduction, Convection, Radiation"]},
+  {"num":"Unit III","title":"Fluid Mechanics & Machinery","intro":"Fluid statics, flow dynamics, and hydraulic machines.","pdf":"unitespdf/mech3.pdf","topics":["Fluid Properties — Density, Viscosity, Surface Tension","Fluid Statics — Pascal's Law, Pressure Measurement","Continuity Equation & Bernoulli's Theorem","Flow Measurement — Venturimeter, Orifice, Pitot Tube","Viscous Flow — Laminar, Turbulent, Reynolds Number","Boundary Layer Theory — Drag & Lift","Hydraulic Turbines — Pelton, Francis, Kaplan","Centrifugal & Reciprocating Pumps"]},
+  {"num":"Unit IV","title":"Machine Design","intro":"Designing mechanical components for strength, stiffness and fatigue.","pdf":"unitespdf/mech4.pdf","topics":["Design Process — Factors of Safety, Stress-Strain","Design of Shafts — Torsion, Bending, Combined Loading","Keys, Keyways, Couplings & Splines","Fasteners — Bolts, Screws, Riveted & Welded Joints","Gear Design — Spur, Helical, Bevel & Worm Gears","Bearings — Rolling Contact & Journal Bearings","Springs — Helical, Leaf, Torsional","Pressure Vessels — Thin & Thick Cylinders"]},
+  {"num":"Unit V","title":"Manufacturing Technology","intro":"Traditional and modern manufacturing processes and CNC programming.","pdf":"unitespdf/mech5.pdf","topics":["Casting — Sand, Die, Investment, Centrifugal Casting","Forging, Rolling, Extrusion & Drawing","Welding — Arc, MIG, TIG, Resistance, Friction Stir","Machining — Turning, Milling, Drilling, Grinding","Cutting Tool Materials & Geometry","CNC Machines — Programming, G-Codes, M-Codes","Jigs, Fixtures & Inspection Tools","Additive Manufacturing — FDM, SLA, SLS 3D Printing"]}
+];
+
+const container = document.getElementById('units-container');
+units.forEach((unit, i) => {
+  const card = document.createElement('div');
+  card.className = 'unit-card';
+  card.innerHTML = `
+    <div class="unit-header" onclick="toggle(${i})">
+      <span class="unit-num">${unit.num}</span>
+      <span class="unit-name">${unit.title}</span>
+      <span class="arrow" id="arrow-${i}">›</span>
+    </div>
+    <div class="unit-body" id="body-${i}">
+      <p class="unit-intro">${unit.intro}</p>
+      <ul class="topic-list">
+        ${unit.topics.map(t => `<li>${t}</li>`).join('')}
+      </ul>
+      <div class="pdf-section">
+        <div class="pdf-section-label">📄 Unit Notes (PDF)</div>
+        <div class="pdf-toolbar">
+          <a class="pdf-download-btn" href="${unit.pdf}" download>⬇ Download PDF</a>
+        </div>
+        <div class="pdf-viewer-wrap">
+          <iframe src="${unit.pdf}" title="${unit.num} Notes"></iframe>
+        </div>
+      </div>
+    </div>
+  `;
+  container.appendChild(card);
+});
+
+function toggle(i) {
+  const body = document.getElementById('body-' + i);
+  const arrow = document.getElementById('arrow-' + i);
+  const isOpen = body.classList.contains('open');
+  document.querySelectorAll('.unit-body').forEach(b => b.classList.remove('open'));
+  document.querySelectorAll('.arrow').forEach(a => a.classList.remove('open'));
+  if (!isOpen) { body.classList.add('open'); arrow.classList.add('open'); }
+}
+document.getElementById('body-0').classList.add('open');
+document.getElementById('arrow-0').classList.add('open');
+</script>
+</body>
+</html>

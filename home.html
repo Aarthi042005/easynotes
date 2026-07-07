@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Student Notes — Home</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --maroon: #6B0F1A;
+    --maroon-dark: #4e0b13;
+    --maroon-light: #8B1A2A;
+    --cream: #f5ede8;
+    --cream-dark: #edddd5;
+    --white: #ffffff;
+    --text-dark: #2a0a0e;
+    --text-mid: #6b3a3a;
+    --text-light: #a07070;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Inter', sans-serif; background: var(--cream); color: var(--text-dark); overflow-x: hidden; }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background:white;
+    backdrop-filter: blur(8px);
+    padding: 0 32px;
+    height: 60px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-logo { color: #421111; font-family: 'Playfair Display', serif; font-size: 20px; text-decoration: none; letter-spacing: 0.5px; }
+  .nav-links { display: flex; gap: 28px; list-style: none; }
+  .nav-links a { color: rgba(84, 19, 19, 0.844); font-size: 13px; text-decoration: none; font-weight: 500; transition: color 0.2s; }
+  .nav-links a:hover { color: #420f0f; }
+  .nav-btn { background: #ffffff; color: var(--maroon); font-size: 13px; font-weight: 600; padding: 7px 18px; border-radius: 20px; text-decoration: none; transition: background 0.2s; }
+  .nav-btn:hover { background: #430f0f; }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    background: var(--maroon);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center;
+    padding: 100px 24px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 70% 30%, rgba(255,255,255,0.04) 0%, transparent 60%),
+                radial-gradient(ellipse at 20% 80%, rgba(255,255,255,0.03) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .hero-eyebrow { color: rgba(255,255,255,0.55); font-size: 12px; letter-spacing: 2.5px; text-transform: uppercase; margin-bottom: 20px; font-weight: 500; }
+  .hero h1 { color: #fff; font-family: 'Playfair Display', serif; font-size: clamp(36px, 6vw, 62px); line-height: 1.15; margin-bottom: 20px; max-width: 700px; }
+  .hero h1 span { color: #f5c6cb; }
+  .hero-sub { color: rgba(255,255,255,0.65); font-size: 16px; line-height: 1.7; max-width: 480px; margin-bottom: 40px; font-weight: 300; }
+  .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+  .btn-primary { background: #fff; color: var(--maroon); font-size: 14px; font-weight: 600; padding: 13px 28px; border-radius: 30px; text-decoration: none; transition: transform 0.18s, background 0.18s; }
+  .btn-primary:hover { background: #fde0e0; transform: translateY(-2px); }
+  .btn-outline { background: transparent; color: #fff; font-size: 14px; font-weight: 500; padding: 13px 28px; border-radius: 30px; border: 1.5px solid rgba(255,255,255,0.35); text-decoration: none; transition: border-color 0.18s, transform 0.18s; }
+  .btn-outline:hover { border-color: rgba(255,255,255,0.7); transform: translateY(-2px); }
+  .hero-scroll { position: absolute; bottom: 28px; left: 50%; transform: translateX(-50%); color: rgba(255,255,255,0.35); font-size: 12px; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .hero-scroll span { display: block; width: 1px; height: 40px; background: rgba(255,255,255,0.2); animation: scrollpulse 1.8s infinite; }
+  @keyframes scrollpulse { 0%,100%{opacity:0.2} 50%{opacity:0.7} }
+
+  /* ── STATS ── */
+  .stats-bar { background: var(--maroon-dark); padding: 22px 32px; display: flex; justify-content: center; gap: 60px; flex-wrap: wrap; }
+  .stat { text-align: center; }
+  .stat .num { color: #fff; font-family: 'Playfair Display', serif; font-size: 28px; }
+  .stat .lbl { color: rgba(255,255,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+
+  /* ── SECTIONS COMMON ── */
+  section { padding: 72px 32px; }
+  .section-label { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: var(--maroon); font-weight: 600; margin-bottom: 10px; }
+  .section-title { font-family: 'Playfair Display', serif; font-size: clamp(24px, 4vw, 36px); color: var(--text-dark); margin-bottom: 14px; line-height: 1.25; }
+  .section-sub { color: var(--text-mid); font-size: 15px; line-height: 1.7; max-width: 540px; font-weight: 300; }
+
+  /* ── FEATURES ── */
+  .features { background: var(--white); }
+  .features-inner { max-width: 1100px; margin: 0 auto; }
+  .features-header { text-align: center; margin-bottom: 52px; }
+  .features-header .section-sub { margin: 0 auto; }
+  .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; }
+  .feature-card { background: var(--cream); border-radius: 16px; padding: 28px 22px; border: 1px solid var(--cream-dark); transition: transform 0.18s; }
+  .feature-card:hover { transform: translateY(-3px); }
+  .feature-icon { font-size: 28px; margin-bottom: 14px; }
+  .feature-title { font-size: 15px; font-weight: 600; color: var(--text-dark); margin-bottom: 8px; }
+  .feature-desc { font-size: 13px; color: var(--text-mid); line-height: 1.6; font-weight: 300; }
+
+  /* ── DEPARTMENTS ── */
+  .departments { background: var(--cream); }
+  .departments-inner { max-width: 1100px; margin: 0 auto; }
+  .dept-header { margin-bottom: 40px; }
+  .dept-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+  .dept-card { background: var(--maroon); border-radius: 14px; padding: 26px 18px 20px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 8px; text-decoration: none; transition: transform 0.18s, background 0.18s; }
+  .dept-card:hover { transform: translateY(-4px); background: var(--maroon-light); }
+  .dept-card .d-code { color: #fff; font-family: 'Playfair Display', serif; font-size: 22px; letter-spacing: 1px; }
+  .dept-card .d-name { color: rgba(255,255,255,0.78); font-size: 11px; line-height: 1.5; }
+  .dept-card .d-count { color: rgba(255,255,255,0.45); font-size: 11px; margin-top: 4px; }
+  .dept-card .d-arrow { color: rgba(255,255,255,0.3); font-size: 16px; margin-top: 4px; }
+
+  /* ── HOW IT WORKS ── */
+  .how { background: var(--white); }
+  .how-inner { max-width: 900px; margin: 0 auto; }
+  .how-header { text-align: center; margin-bottom: 52px; }
+  .how-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0; position: relative; }
+  .how-step { text-align: center; padding: 24px 20px; position: relative; }
+  .step-num { width: 48px; height: 48px; border-radius: 50%; background: var(--maroon); color: #fff; font-family: 'Playfair Display', serif; font-size: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
+  .step-title { font-size: 14px; font-weight: 600; color: var(--text-dark); margin-bottom: 8px; }
+  .step-desc { font-size: 13px; color: var(--text-mid); line-height: 1.6; font-weight: 300; }
+  .step-connector { position: absolute; top: 48px; right: -24px; width: 48px; height: 1px; background: var(--cream-dark); z-index: 1; }
+
+  /* ── CTA ── */
+  .cta-section { background: var(--maroon); text-align: center; padding: 80px 32px; }
+  .cta-section h2 { color: #fff; font-family: 'Playfair Display', serif; font-size: clamp(26px, 4vw, 40px); margin-bottom: 14px; }
+  .cta-section p { color: rgba(255,255,255,0.65); font-size: 15px; margin-bottom: 36px; font-weight: 300; }
+
+  /* ── FOOTER ── */
+  footer { background: var(--maroon-dark); padding: 32px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  footer .f-logo { color: #fff; font-family: 'Playfair Display', serif; font-size: 18px; }
+  footer .f-links { display: flex; gap: 24px; }
+  footer .f-links a { color: rgba(255,255,255,0.45); font-size: 12px; text-decoration: none; }
+  footer .f-links a:hover { color: rgba(255,255,255,0.8); }
+  footer .f-copy { color: rgba(255,255,255,0.3); font-size: 12px; }
+
+  @media(max-width:600px) {
+    nav { padding: 0 16px; }
+    .nav-links { display: none; }
+    section { padding: 52px 16px; }
+    .stats-bar { gap: 30px; padding: 18px 16px; }
+    footer { flex-direction: column; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="home.html">Student Notes</a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#departments">Departments</a></li>
+    <li><a href="#how">How it works</a></li>
+  </ul>
+  <a class="nav-btn" href="subjects.html">Browse Notes →</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <p class="hero-eyebrow">Your College Study Companion</p>
+  <h1>All Your <span>Engineering Notes</span> in One Place</h1>
+  <p class="hero-sub">Unit-wise organized notes for CSE, ECE, EEE, MECH, CIVIL & IT — clean, simple and always accessible.</p>
+  <div class="hero-btns">
+    <a class="btn-primary" href="subjects.html">Browse Departments</a>
+    <a class="btn-outline" href="#how">How it works</a>
+  </div>
+  <div class="hero-scroll">
+    <span></span>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat"><div class="num">6</div><div class="lbl">Departments</div></div>
+  <div class="stat"><div class="num">30</div><div class="lbl">Units</div></div>
+  <div class="stat"><div class="num">200+</div><div class="lbl">Topics</div></div>
+  <div class="stat"><div class="num">100%</div><div class="lbl">Free</div></div>
+</div>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="features-inner">
+    <div class="features-header">
+      <p class="section-label">Why Student Notes</p>
+      <h2 class="section-title">Everything you need, nothing you don't</h2>
+      <p class="section-sub">Built for engineering students who want clean, exam-ready notes without the clutter.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">📖</div>
+        <div class="feature-title">Unit-wise Organized</div>
+        <div class="feature-desc">Every subject neatly split into 5 units with clear topic listings — no more hunting for content.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔒</div>
+        <div class="feature-title">Code-locked Access</div>
+        <div class="feature-desc">Each department has a unique access code — simple, secure and easy to share with classmates.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📱</div>
+        <div class="feature-title">Mobile Friendly</div>
+        <div class="feature-desc">Study on your phone or laptop — the layout adapts beautifully to any screen size.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <div class="feature-title">Instant Access</div>
+        <div class="feature-desc">No login, no signup, no internet required after download — just open and study.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEPARTMENTS -->
+<section class="departments" id="departments">
+  <div class="departments-inner">
+    <div class="dept-header">
+      <p class="section-label">Departments</p>
+      <h2 class="section-title">Pick your branch</h2>
+      <p class="section-sub">Six engineering departments, each with 5 detailed units and 30+ topics.</p>
+    </div>
+    <div class="dept-grid">
+      <a class="dept-card" href="cse.html">
+        <div class="d-code">CSE</div>
+        <div class="d-name">Computer Science & Engineering</div>
+        <div class="d-count">5 Units · 35 Topics</div>
+        <div class="d-arrow">→</div>
+      </a>
+      <a class="dept-card" href="ece.html">
+        <div class="d-code">ECE</div>
+        <div class="d-name">Electronics & Communication</div>
+        <div class="d-count">5 Units · 37 Topics</div>
+        <div class="d-arrow">→</div>
+      </a>
+      <a class="dept-card" href="eee.html">
+        <div class="d-code">EEE</div>
+        <div class="d-name">Electrical & Electronics</div>
+        <div class="d-count">5 Units · 37 Topics</div>
+        <div class="d-arrow">→</div>
+      </a>
+      <a class="dept-card" href="mech.html">
+        <div class="d-code">MECH</div>
+        <div class="d-name">Mechanical Engineering</div>
+        <div class="d-count">5 Units · 38 Topics</div>
+        <div class="d-arrow">→</div>
+      </a>
+      <a class="dept-card" href="civil.html">
+        <div class="d-code">CIVIL</div>
+        <div class="d-name">Civil Engineering</div>
+        <div class="d-count">5 Units · 38 Topics</div>
+        <div class="d-arrow">→</div>
+      </a>
+      <a class="dept-card" href="it.html">
+        <div class="d-code">IT</div>
+        <div class="d-name">Information Technology</div>
+        <div class="d-count">5 Units · 39 Topics</div>
+        <div class="d-arrow">→</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="how-inner">
+    <div class="how-header">
+      <p class="section-label">How it works</p>
+      <h2 class="section-title">3 steps to your notes</h2>
+    </div>
+    <div class="how-steps">
+      <div class="how-step">
+        <div class="step-num">1</div>
+        <div class="step-title">Choose your department</div>
+        <div class="step-desc">Go to the departments page and find your branch — CSE, ECE, EEE, MECH, CIVIL or IT.</div>
+        <div class="step-connector"></div>
+      </div>
+      <div class="how-step">
+        <div class="step-num">2</div>
+        <div class="step-title">Enter the access code</div>
+        <div class="step-desc">Type your department code (e.g. CSE) in the input box and click the arrow to unlock.</div>
+        <div class="step-connector"></div>
+      </div>
+      <div class="how-step">
+        <div class="step-num">3</div>
+        <div class="step-title">Explore units & topics</div>
+        <div class="step-desc">Click on any unit to expand it and browse all the topics inside — accordion style.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <h2>Ready to start studying?</h2>
+  <p>Access all departments, units and topics — completely free.</p>
+  <a class="btn-primary" href="subjects.html">Open Departments →</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="f-logo">📚 Student Notes</div>
+  <div class="f-links">
+    <a href="home.html">Home</a>
+    <a href="index.html">Departments</a>
+    <a href="#features">Features</a>
+    <a href="#how">How it works</a>
+  </div>
+  <div class="f-copy">© 2025 Student Notes</div>
+</footer>
+
+</body>
+</html>
