@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign In – Student Notes</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f5f5f5;
+      min-height: 100vh;
+    }
+
+    /* ── NAV ── */
+    nav {
+      background: #3b0a0a;
+      padding: 14px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    nav .brand {
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 28px;
+    }
+    nav ul li a {
+      color: #ddd;
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.2s;
+    }
+    nav ul li a:hover,
+    nav ul li a.active { color: #fff; }
+
+    /* ── MAIN CARD AREA ── */
+    .main {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 60px 20px;
+      min-height: calc(100vh - 56px);
+    }
+
+    .card-wrapper {
+      display: flex;
+      max-width: 860px;
+      width: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    }
+
+    /* ── LEFT PANEL ── */
+    .left-panel {
+      background: #6b1a1a;
+      color: #fff;
+      padding: 48px 36px;
+      width: 42%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+    .left-panel::after {
+      content: '';
+      position: absolute;
+      bottom: -40px;
+      right: -40px;
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.07);
+    }
+    .left-panel h2 { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+    .left-panel .tagline { font-size: 13px; color: #f0c0c0; margin-bottom: 32px; }
+    .left-panel ul { list-style: none; display: flex; flex-direction: column; gap: 20px; }
+    .left-panel ul li { font-size: 13px; padding-left: 16px; position: relative; line-height: 1.5; }
+    .left-panel ul li::before {
+      content: '●';
+      position: absolute;
+      left: 0;
+      top: 2px;
+      font-size: 8px;
+      color: #ffaaaa;
+    }
+    .left-panel ul li strong { display: block; font-size: 14px; margin-bottom: 2px; }
+    .left-panel .copy { font-size: 11px; color: #c08080; margin-top: 32px; }
+
+    /* ── RIGHT PANEL ── */
+    .right-panel {
+      background: #fff;
+      padding: 40px 44px;
+      flex: 1;
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 28px;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      background: #f0f0f0;
+      color: #888;
+      transition: all 0.2s;
+    }
+    .tab-btn.active {
+      background: #6b1a1a;
+      color: #fff;
+    }
+
+    /* Forms */
+    .form-section { display: none; }
+    .form-section.show { display: block; }
+
+    .form-section h3 { font-size: 22px; color: #222; margin-bottom: 4px; }
+    .form-section p { font-size: 13px; color: #888; margin-bottom: 24px; }
+
+    .form-row {
+      display: flex;
+      gap: 12px;
+    }
+    .field {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 16px;
+      flex: 1;
+    }
+    .field label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      color: #555;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+    .field input, .field select {
+      padding: 10px 12px;
+      border: 1.5px solid #ddd;
+      border-radius: 8px;
+      font-size: 14px;
+      color: #222;
+      outline: none;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+    .field input:focus, .field select:focus { border-color: #6b1a1a; }
+
+    .pwd-wrap { position: relative; }
+    .pwd-wrap input { padding-right: 40px; }
+    .pwd-toggle {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      font-size: 16px;
+      color: #aaa;
+      background: none;
+      border: none;
+    }
+
+    .forgot {
+      text-align: right;
+      font-size: 12px;
+      margin-top: -10px;
+      margin-bottom: 16px;
+    }
+    .forgot a { color: #6b1a1a; text-decoration: none; }
+
+    .btn-primary {
+      width: 100%;
+      padding: 12px;
+      background: #6b1a1a;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-primary:hover { background: #3b0a0a; }
+
+    .divider {
+      text-align: center;
+      font-size: 12px;
+      color: #aaa;
+      margin: 16px 0;
+      position: relative;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 42%;
+      height: 1px;
+      background: #eee;
+    }
+    .divider::before { left: 0; }
+    .divider::after { right: 0; }
+
+    .btn-google {
+      width: 100%;
+      padding: 11px;
+      background: #fff;
+      border: 1.5px solid #ddd;
+      border-radius: 8px;
+      font-size: 14px;
+      color: #444;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: border-color 0.2s;
+    }
+    .btn-google:hover { border-color: #999; }
+
+    .terms {
+      font-size: 11px;
+      color: #aaa;
+      text-align: center;
+      margin-top: 14px;
+    }
+    .terms a { color: #6b1a1a; text-decoration: none; }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #222;
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 14px;
+      opacity: 0;
+      transition: all 0.4s;
+      z-index: 999;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    .toast.success { background: #2e7d32; }
+    .toast.error { background: #b71c1c; }
+
+    @media (max-width: 640px) {
+      .card-wrapper { flex-direction: column; }
+      .left-panel { width: 100%; padding: 32px 24px; }
+      .right-panel { padding: 32px 24px; }
+      .form-row { flex-direction: column; gap: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="brand">Learn Smart Build Your Future</div>
+  <ul>
+    <li><a href="home.html">Home</a></li>
+    <li><a href="subjects.html">Subjects</a></li>
+    <li><a href="upload.html">Upload</a></li>
+    <li><a href="profile.html">Profile</a></li>
+    <li><a href="sign.html" class="active">Sign In</a></li>
+  </ul>
+</nav>
+
+<div class="main">
+  <div class="card-wrapper">
+
+    <!-- LEFT -->
+    <div class="left-panel">
+      <div>
+        <h2>Student Notes</h2>
+        <p class="tagline">Learn Smart · Score Better</p>
+        <ul>
+          <li><strong>Subject-wise Notes</strong>Download CSE, ECE, MECH notes instantly</li>
+          <li><strong>Previous Year Papers</strong>Access question papers & answer keys</li>
+          <li><strong>Upload & Share</strong>Contribute notes for your department</li>
+          <li><strong>Track Progress</strong>Save and manage your study materials</li>
+        </ul>
+      </div>
+      <p class="copy">© 2026 Student Notes · All rights reserved</p>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="right-panel">
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('signin')">Sign In</button>
+        <button class="tab-btn" onclick="switchTab('signup')">Sign Up</button>
+      </div>
+
+      <!-- SIGN IN -->
+      <div class="form-section show" id="signin-form">
+        <h3>Welcome back!</h3>
+        <p>Sign in to access your notes and study materials</p>
+
+        <div class="field">
+          <label>Email Address</label>
+          <input type="email" id="si-email" placeholder="you@student.edu" />
+        </div>
+
+        <div class="field">
+          <label>Password</label>
+          <div class="pwd-wrap">
+            <input type="password" id="si-password" placeholder="Enter your password" />
+            <button class="pwd-toggle" onclick="togglePwd('si-password', this)">👁</button>
+          </div>
+        </div>
+
+        <div class="forgot"><a href="#">Forgot password?</a></div>
+
+        <button class="btn-primary" onclick="handleSignIn()">Sign In</button>
+
+        <div class="divider">or continue with</div>
+
+        <button class="btn-google">
+          <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.7 2.5 30.2 0 24 0 14.7 0 6.7 5.4 2.8 13.3l7.8 6.1C12.4 13.1 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 7.1-10.1 7.1-17z"/><path fill="#FBBC05" d="M10.6 28.6A14.5 14.5 0 0 1 9.5 24c0-1.6.3-3.1.8-4.6l-7.8-6.1A24 24 0 0 0 0 24c0 3.9.9 7.6 2.5 10.9l8.1-6.3z"/><path fill="#34A853" d="M24 48c6.2 0 11.4-2 15.2-5.5l-7.5-5.8c-2 1.4-4.6 2.3-7.7 2.3-6.3 0-11.6-3.6-13.4-8.8l-8.1 6.3C6.7 42.6 14.7 48 24 48z"/></svg>
+          Continue with Google
+        </button>
+      </div>
+
+      <!-- SIGN UP -->
+      <div class="form-section" id="signup-form">
+        <h3>Create Account</h3>
+        <p>Join Student Notes and start learning smarter.</p>
+
+        <div class="form-row">
+          <div class="field">
+            <label>First Name</label>
+            <input type="text" id="su-fname" placeholder="Aarthi" />
+          </div>
+          <div class="field">
+            <label>Last Name</label>
+            <input type="text" id="su-lname" placeholder="S" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label>College Email</label>
+          <input type="email" id="su-email" placeholder="you@student.edu" />
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label>Roll Number</label>
+            <input type="text" id="su-roll" placeholder="21CS001" />
+          </div>
+          <div class="field">
+            <label>Department</label>
+            <select id="su-dept">
+              <option value="">Select</option>
+              <option value="CSE">CSE</option>
+              <option value="ECE">ECE</option>
+              <option value="EEE">EEE</option>
+              <option value="MECH">MECH</option>
+              <option value="CIVIL">CIVIL</option>
+              <option value="IT">IT</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Password</label>
+          <div class="pwd-wrap">
+            <input type="password" id="su-password" placeholder="Min. 6 characters" />
+            <button class="pwd-toggle" onclick="togglePwd('su-password', this)">👁</button>
+          </div>
+        </div>
+
+        <button class="btn-primary" onclick="handleSignUp()">Create Account</button>
+
+        <p class="terms">By signing up, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  function switchTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach((b, i) => {
+      b.classList.toggle('active', (tab === 'signin' && i === 0) || (tab === 'signup' && i === 1));
+    });
+    document.getElementById('signin-form').classList.toggle('show', tab === 'signin');
+    document.getElementById('signup-form').classList.toggle('show', tab === 'signup');
+  }
+
+  function togglePwd(id, btn) {
+    const inp = document.getElementById(id);
+    if (inp.type === 'password') { inp.type = 'text'; btn.textContent = '🙈'; }
+    else { inp.type = 'password'; btn.textContent = '👁'; }
+  }
+
+  function showToast(msg, type = 'success') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast ' + type + ' show';
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  /* ── SIGN UP ── */
+  function handleSignUp() {
+    const fname = document.getElementById('su-fname').value.trim();
+    const lname = document.getElementById('su-lname').value.trim();
+    const email = document.getElementById('su-email').value.trim();
+    const roll  = document.getElementById('su-roll').value.trim();
+    const dept  = document.getElementById('su-dept').value;
+    const pwd   = document.getElementById('su-password').value;
+
+    if (!fname || !lname || !email || !roll || !dept || !pwd) {
+      showToast('Please fill all fields!', 'error'); return;
+    }
+    if (pwd.length < 6) {
+      showToast('Password min. 6 characters!', 'error'); return;
+    }
+
+    // Check duplicate
+    const users = JSON.parse(localStorage.getItem('sn_users') || '[]');
+    if (users.find(u => u.email === email)) {
+      showToast('Email already registered!', 'error'); return;
+    }
+
+    users.push({ fname, lname, email, roll, dept, pwd });
+    localStorage.setItem('sn_users', JSON.stringify(users));
+
+    showToast('Account created! Please Sign In ✓', 'success');
+    setTimeout(() => switchTab('signin'), 1500);
+  }
+
+  /* ── SIGN IN ── */
+  function handleSignIn() {
+    const email = document.getElementById('si-email').value.trim();
+    const pwd   = document.getElementById('si-password').value;
+
+    if (!email || !pwd) {
+      showToast('Enter email and password!', 'error'); return;
+    }
+
+    const users = JSON.parse(localStorage.getItem('sn_users') || '[]');
+    const user = users.find(u => u.email === email && u.pwd === pwd);
+
+    if (!user) {
+      showToast('Invalid email or password!', 'error'); return;
+    }
+
+    // Save session
+    localStorage.setItem('sn_current_user', JSON.stringify(user));
+    showToast('Welcome back, ' + user.fname + '! ✓', 'success');
+
+    // Redirect after 1.5s
+    setTimeout(() => {
+      window.location.href = 'home.html';
+    }, 1500);
+  }
+
+  // Auto-switch to signup if URL has ?tab=signup
+  if (location.search.includes('tab=signup')) switchTab('signup');
+</script>
+</body>
+</html>
